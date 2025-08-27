@@ -22,10 +22,17 @@ services:
       - mysql
     depends_on:
       - mysql
-    ports:
-      - "8080:80"
     environment:
       WORDPRESS_DB_HOST: mysql
       WORDPRESS_DB_NAME: ${MYSQL_DATABASE:-wordpress}
       WORDPRESS_DB_USER: ${MYSQL_USER:-root}
       WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
+  tunnel:
+    image: cloudflare/cloudflared
+    restart: unless-stopped
+    command:
+      - tunnel
+      - --no-autoupdate
+      - run
+    environment:
+      - TUNNEL_TOKEN=TOKEN
